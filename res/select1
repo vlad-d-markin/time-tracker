@@ -1,0 +1,1 @@
+SELECT * FROM tasks, stories_tasks, stories WHERE tasks.id=stories_tasks.task_id AND stories_tasks.story_id=stories.id AND stories.title='TEst story 2'
