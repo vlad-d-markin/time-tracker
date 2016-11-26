@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
+import java.io.File;
 
 import net.miginfocom.swing.MigLayout;
 import java.awt.Dimension;
@@ -34,6 +35,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JList;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.FlowLayout;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
@@ -44,13 +47,15 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.JTabbedPane;
+import javax.swing.JMenuItem;
 
-public class MainWindow {
+public class MainWindow implements ActionListener {
 
 	private JFrame frmTaskManager;
 	private StoryEditorDialog storyEditorDialog;
 	private TasksManager taskManager;
-	
+	private JMenuItem mItemOpen;
+	private JFileChooser fileChooser;
 	
 	/**
 	 * Launch the application.
@@ -74,6 +79,8 @@ public class MainWindow {
 	public MainWindow() {
 		taskManager = new TasksManager();
 		
+//		taskManager.op
+		
 		initialize();
 	}
 
@@ -81,23 +88,31 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		fileChooser = new JFileChooser();
 		frmTaskManager = new JFrame();
 		
 		frmTaskManager.setTitle("Task Manager");
 		frmTaskManager.setBounds(100, 100, 1012, 550);
 		frmTaskManager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		JMenuBar menuBar = new JMenuBar();
-		frmTaskManager.setJMenuBar(menuBar);
+		JMenuBar mainMenu = new JMenuBar();
+		frmTaskManager.setJMenuBar(mainMenu);
 		
-		JMenu mnFile = new JMenu("File");
-		menuBar.add(mnFile);
+		JMenu menuTabFile = new JMenu("File");		
+		mainMenu.add(menuTabFile);
+		
+		mItemOpen = new JMenuItem("Open");
+		mItemOpen.addActionListener(this);
+		
+		menuTabFile.add(mItemOpen);
 		frmTaskManager.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frmTaskManager.getContentPane().add(tabbedPane);
 		
-		StoriesPanel panelStories = new StoriesPanel();
+		// Panels
+		
+		StoriesPanel panelStories = new StoriesPanel(taskManager);
 		tabbedPane.addTab("Stories", panelStories);
 		
 		JPanel panelTasks = new JPanel();
@@ -105,5 +120,23 @@ public class MainWindow {
 		
 		JPanel panelSubtasks = new JPanel();
 		tabbedPane.addTab("Subtasks", null, panelSubtasks, null);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println(e.getActionCommand());
+		if(e.getSource() == mItemOpen) {
+			int fileChooserRetVal = fileChooser.showOpenDialog(frmTaskManager);
+			
+			if(fileChooserRetVal == JFileChooser.APPROVE_OPTION) {
+				File dbFile = fileChooser.getSelectedFile();
+				taskManager.closeDB();
+				taskManager.openDB(dbFile.getAbsolutePath());
+			}
+			else {
+				
+			}
+		}
 	}
 }

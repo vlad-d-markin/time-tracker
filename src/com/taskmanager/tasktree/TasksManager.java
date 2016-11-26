@@ -6,36 +6,12 @@ import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 
 import com.taskmanager.db.TasksDatabase;
+import com.taskmanager.listmodel.StoryListModel;
 
 public class TasksManager implements StoryListener {
 	
 	private TasksDatabase db;
 	private ArrayList<Story> stories;
-	
-	public class StoryListModel extends AbstractListModel<Story> {
-		
-		public void addStory(Story s) {
-			stories.add(s);
-			fireIntervalAdded(this, stories.size()-1, stories.size()-1);
-		}
-		
-		public void update(Story s) {
-			int idx = stories.indexOf(s);
-			fireContentsChanged(this, idx, idx);
-			
-		}
-
-		@Override
-		public Story getElementAt(int index) {
-			return stories.get(index);
-		}
-
-		@Override
-		public int getSize() {
-			return stories.size();
-		}
-		
-	}
 	
 	private StoryListModel storyListModel;
 	
@@ -43,13 +19,14 @@ public class TasksManager implements StoryListener {
 	public TasksManager() {
 		stories = new ArrayList<Story>();
 		db = new TasksDatabase();
-		storyListModel = new StoryListModel();
+		storyListModel = new StoryListModel(stories);
 	}
 	
 	public void openDB(String path) {
 		try{
 			db.connect(path);
 			System.out.println("Successfully connected to DB: " + path);
+			loadStories();
 		}
 		catch(SQLException e) {
 			System.err.println("DB error while connecting.");
@@ -74,16 +51,44 @@ public class TasksManager implements StoryListener {
 		return this.storyListModel;
 	}
 	
-	public Story createStory(String title, String description) {
-		Story s = new Story(title, description);
-		s.adddListener(this);
-		storyListModel.addStory(s);
-		return s;
+	
+	public void loadStories() {
+		try {
+			ArrayList<Story> list = db.getStories();
+			storyListModel.cleanList();
+			for (Story story : list) {
+				storyListModel.addStory(story);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createStory(String title, String description) {		
+		try {
+			Story s = new Story(title, description);
+			db.createStory(s);
+			loadStories();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeStory(Story s) {
+		try {
+			db.removeStory(s.getId());
+			storyListModel.removeStory(s);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void notifyChanged(Story s) {
-		storyListModel.update(s);		
+//		storyListModel.update(s);		
 	}
 	
 }

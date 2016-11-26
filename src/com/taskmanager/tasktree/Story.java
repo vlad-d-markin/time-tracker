@@ -37,6 +37,10 @@ public class Story {
 		return this.description;
 	}
 	
+	public int getId() {
+		return id;
+	}
+	
 	public String toString() {
 		return this.title;
 	}

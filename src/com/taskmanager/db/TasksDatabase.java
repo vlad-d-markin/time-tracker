@@ -1,6 +1,9 @@
 package com.taskmanager.db;
 
 import java.sql.*;
+import java.util.ArrayList;
+
+import com.taskmanager.tasktree.Story;
 
 public class TasksDatabase {
 	private Connection dbConnection;
@@ -33,11 +36,25 @@ public class TasksDatabase {
 		this.opened = false; 
 	}
 	
+	public ArrayList<Story> getStories() throws SQLException {
+		Statement getStatement = dbConnection.createStatement();
+		ArrayList<Story> stories = new ArrayList<Story>();
+		
+		ResultSet result = getStatement.executeQuery("SELECT id, title, description FROM 'stories'");
+		while(result.next()) {
+			Story s = new Story(result.getInt(1), result.getString(2), result.getString(3));
+			stories.add(s);
+			System.out.println(s.getTitle());
+		}
+		
+		getStatement.close();
+		return stories;
+	}
 	
-	public void createStory(String title, String description) throws SQLException {
+	public void createStory(Story s) throws SQLException {
 		Statement createStoryStatement = dbConnection.createStatement();
 		
-		createStoryStatement.execute("INSERT INTO 'stories' ('title', 'description') VALUES ('" + title + "', '" + description + "')");
+		createStoryStatement.execute("INSERT INTO 'stories' ('title', 'description') VALUES ('" + s.getTitle() + "', '" + s.getDescription() + "')");
 		
 		createStoryStatement.close();
 	}
