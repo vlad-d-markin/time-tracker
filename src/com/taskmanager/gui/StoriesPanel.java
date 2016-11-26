@@ -23,9 +23,11 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Rectangle;
 import java.awt.Dimension;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 
 public class StoriesPanel extends JPanel {
 	private JTextField textField;
+	private JTextField txtTitleHere;
 
 	/**
 	 * Create the panel.
@@ -42,6 +44,56 @@ public class StoriesPanel extends JPanel {
 		panelEditStory.setMinimumSize(new Dimension(400, 10));
 		panelEditStory.setBorder(new TitledBorder(null, "Edit story", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		splitPane.setRightComponent(panelEditStory);
+		
+		JLabel lblTitle = new JLabel("Title:");
+		
+		txtTitleHere = new JTextField();
+		txtTitleHere.setText("Title here");
+		txtTitleHere.setColumns(10);
+		
+		JLabel lblDescription = new JLabel("Description:");
+		
+		JTextArea textArea = new JTextArea();
+		
+		JButton btnSave = new JButton("Save");
+		
+		JButton btnReset = new JButton("Reset");
+		GroupLayout gl_panelEditStory = new GroupLayout(panelEditStory);
+		gl_panelEditStory.setHorizontalGroup(
+			gl_panelEditStory.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelEditStory.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
+						.addComponent(textArea, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_panelEditStory.createSequentialGroup()
+							.addComponent(btnReset)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_panelEditStory.createSequentialGroup()
+							.addComponent(lblTitle)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(txtTitleHere, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE))
+						.addComponent(lblDescription))
+					.addGap(8))
+		);
+		gl_panelEditStory.setVerticalGroup(
+			gl_panelEditStory.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panelEditStory.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTitle)
+						.addComponent(txtTitleHere, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(lblDescription)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textArea, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnSave)
+						.addComponent(btnReset))
+					.addContainerGap())
+		);
+		panelEditStory.setLayout(gl_panelEditStory);
 		
 		JPanel panelStories = new JPanel();
 		panelStories.setMinimumSize(new Dimension(400, 10));
