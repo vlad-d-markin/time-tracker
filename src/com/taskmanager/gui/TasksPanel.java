@@ -50,11 +50,12 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 	private JPanel panelEditStory;
 	private JButton btnSave;
 	private JButton btnReset;
-	private JTextArea txtDescription;
 	private JTextField txtTitle;
 	private JComboBox comboStoryId;
 	
 	int newStoryId;
+	private JScrollPane descriptionScrollPane;
+	private JTextArea txtDescription;
 	
 	/**
 	 * Create the panel.
@@ -82,8 +83,6 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 		
 		JLabel lblDescription = new JLabel("Description:");
 		
-		txtDescription = new JTextArea();
-		
 		btnSave = new JButton("Save");
 		btnSave.addActionListener(this);
 		btnReset = new JButton("Reset");
@@ -92,6 +91,8 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 		JLabel lblStory = new JLabel("Story:");
 		
 		comboStoryId = new JComboBox();
+		
+		descriptionScrollPane = new JScrollPane();
 		
 		
 		GroupLayout gl_panelEditStory = new GroupLayout(panelEditStory);
@@ -106,16 +107,16 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 									.addComponent(btnReset)
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
-								.addGroup(Alignment.LEADING, gl_panelEditStory.createSequentialGroup()
+								.addGroup(gl_panelEditStory.createSequentialGroup()
 									.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblTitle)
 										.addComponent(lblStory))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
 										.addComponent(comboStoryId, 0, 552, Short.MAX_VALUE)
-										.addComponent(txtTitle, GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
-								.addComponent(txtDescription, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
-							.addGap(8))
+										.addComponent(txtTitle, GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)))
+								.addComponent(descriptionScrollPane, GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE))
+							.addGap(1))
 						.addGroup(gl_panelEditStory.createSequentialGroup()
 							.addComponent(lblDescription)
 							.addContainerGap(524, Short.MAX_VALUE))))
@@ -134,13 +135,16 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(lblDescription)
 					.addGap(18)
-					.addComponent(txtDescription, GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+					.addComponent(descriptionScrollPane, GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSave)
 						.addComponent(btnReset))
-					.addContainerGap())
+					.addGap(11))
 		);
+		
+		txtDescription = new JTextArea();
+		descriptionScrollPane.setViewportView(txtDescription);
 		panelEditStory.setLayout(gl_panelEditStory);
 		
 		JPanel panelStories = new JPanel();

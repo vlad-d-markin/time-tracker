@@ -46,8 +46,9 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 	private JPanel panelEditStory;
 	private JButton btnSave;
 	private JButton btnReset;
-	private JTextArea txtStoryDescription;
 	private JTextField txtStoryTitle;
+	private JScrollPane scrollPane_1;
+	private JTextArea txtStoryDescription;
 	
 	/**
 	 * Create the panel.
@@ -75,12 +76,12 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 		
 		JLabel lblDescription = new JLabel("Description:");
 		
-		txtStoryDescription = new JTextArea();
-		
 		btnSave = new JButton("Save");
 		btnSave.addActionListener(this);
 		btnReset = new JButton("Reset");
 		btnReset.addActionListener(this);
+		
+		scrollPane_1 = new JScrollPane();
 		
 		
 		GroupLayout gl_panelEditStory = new GroupLayout(panelEditStory);
@@ -89,17 +90,21 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 				.addGroup(gl_panelEditStory.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
-						.addComponent(txtStoryDescription, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
 						.addGroup(Alignment.TRAILING, gl_panelEditStory.createSequentialGroup()
-							.addComponent(btnReset)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
+							.addGroup(gl_panelEditStory.createParallelGroup(Alignment.TRAILING)
+								.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+								.addGroup(gl_panelEditStory.createSequentialGroup()
+									.addComponent(btnReset)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_panelEditStory.createSequentialGroup()
+									.addComponent(lblTitle)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(txtStoryTitle, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)))
+							.addGap(8))
 						.addGroup(gl_panelEditStory.createSequentialGroup()
-							.addComponent(lblTitle)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtStoryTitle, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE))
-						.addComponent(lblDescription))
-					.addGap(8))
+							.addComponent(lblDescription)
+							.addContainerGap(383, Short.MAX_VALUE))))
 		);
 		gl_panelEditStory.setVerticalGroup(
 			gl_panelEditStory.createParallelGroup(Alignment.LEADING)
@@ -108,16 +113,20 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTitle)
 						.addComponent(txtStoryTitle, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(lblDescription)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtStoryDescription, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGap(12)
+					.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+					.addGap(18)
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSave)
 						.addComponent(btnReset))
 					.addContainerGap())
 		);
+		
+		txtStoryDescription = new JTextArea();
+		txtStoryDescription.setText("Description");
+		scrollPane_1.setViewportView(txtStoryDescription);
 		panelEditStory.setLayout(gl_panelEditStory);
 		
 		JPanel panelStories = new JPanel();
