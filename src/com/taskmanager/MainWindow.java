@@ -90,6 +90,7 @@ public class MainWindow implements ActionListener {
 	private void initialize() {
 		fileChooser = new JFileChooser();
 		frmTaskManager = new JFrame();
+		frmTaskManager.setMinimumSize(new Dimension(860, 540));
 		
 		frmTaskManager.setTitle("Task Manager");
 		frmTaskManager.setBounds(100, 100, 1012, 550);
