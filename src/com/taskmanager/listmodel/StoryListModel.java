@@ -3,11 +3,14 @@ package com.taskmanager.listmodel;
 import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
 
 import com.taskmanager.tasktree.Story;
+import com.taskmanager.tasktree.StoryListener;
 
-public class StoryListModel extends AbstractListModel<Story> {
+public class StoryListModel extends AbstractListModel<Story> implements StoryListener, ComboBoxModel<Story> {
 	private ArrayList<Story> stories;
+	private Story selected;
 	
 	public StoryListModel(ArrayList<Story> stories) {
 		this.stories = stories;
@@ -28,6 +31,7 @@ public class StoryListModel extends AbstractListModel<Story> {
 	
 	public void addStory(Story s) {
 		stories.add(s);
+		s.adddListener(this);
 		fireIntervalAdded(this, getSize() - 1, getSize() - 1);
 	}
 	
@@ -50,6 +54,22 @@ public class StoryListModel extends AbstractListModel<Story> {
 	@Override
 	public int getSize() {
 		return stories.size();
+	}
+
+	@Override
+	public void notifyChanged(Story s) {
+		storyChanged(s);		
+	}
+
+	@Override
+	public Object getSelectedItem() {
+		return selected;
+	}
+
+	@Override
+	public void setSelectedItem(Object anItem) {
+		selected = (Story) anItem;
+		storyChanged(selected);
 	}
 
 }

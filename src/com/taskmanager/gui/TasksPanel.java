@@ -18,6 +18,7 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
 import com.taskmanager.tasktree.Story;
+import com.taskmanager.tasktree.Task;
 import com.taskmanager.tasktree.TasksManager;
 
 import java.awt.FlowLayout;
@@ -32,8 +33,11 @@ import java.awt.Dimension;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.JComboBox;
 
-public class StoriesPanel extends JPanel implements ListSelectionListener, ActionListener {
+public class TasksPanel extends JPanel implements ListSelectionListener, ActionListener {
 	private TasksManager taskManager;
 	
 	private JTextField textField;	
@@ -42,19 +46,22 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 	private JButton buttonAdd;
 	
 
-	private Story currentStory = null;
+	private Task currentTask = null;
 	private JPanel panelEditStory;
 	private JButton btnSave;
 	private JButton btnReset;
-	private JTextArea txtStoryDescription;
-	private JTextField txtStoryTitle;
+	private JTextArea txtDescription;
+	private JTextField txtTitle;
+	private JComboBox comboStoryId;
+	
+	int newStoryId;
 	
 	/**
 	 * Create the panel.
 	 */
 	
 	
-	public StoriesPanel(TasksManager taskManager) {
+	public TasksPanel(TasksManager taskManager) {
 		this.taskManager = taskManager;
 		
 		setLayout(new GridLayout(0, 1, 0, 0));
@@ -64,23 +71,27 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 		
 		panelEditStory = new JPanel();
 		panelEditStory.setMinimumSize(new Dimension(400, 10));
-		panelEditStory.setBorder(new TitledBorder(null, "Edit story", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelEditStory.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Edit task", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		splitPane.setRightComponent(panelEditStory);
 		
 		JLabel lblTitle = new JLabel("Title:");
 		
-		txtStoryTitle = new JTextField();
-		txtStoryTitle.setText("Title here");
-		txtStoryTitle.setColumns(10);
+		txtTitle = new JTextField();
+		txtTitle.setText("Title here");
+		txtTitle.setColumns(10);
 		
 		JLabel lblDescription = new JLabel("Description:");
 		
-		txtStoryDescription = new JTextArea();
+		txtDescription = new JTextArea();
 		
 		btnSave = new JButton("Save");
 		btnSave.addActionListener(this);
 		btnReset = new JButton("Reset");
 		btnReset.addActionListener(this);
+		
+		JLabel lblStory = new JLabel("Story:");
+		
+		comboStoryId = new JComboBox();
 		
 		
 		GroupLayout gl_panelEditStory = new GroupLayout(panelEditStory);
@@ -89,17 +100,25 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 				.addGroup(gl_panelEditStory.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
-						.addComponent(txtStoryDescription, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, gl_panelEditStory.createSequentialGroup()
-							.addComponent(btnReset)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_panelEditStory.createSequentialGroup()
-							.addComponent(lblTitle)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(txtStoryTitle, GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE))
-						.addComponent(lblDescription))
-					.addGap(8))
+							.addGroup(gl_panelEditStory.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panelEditStory.createSequentialGroup()
+									.addComponent(btnReset)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(btnSave, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE))
+								.addGroup(Alignment.LEADING, gl_panelEditStory.createSequentialGroup()
+									.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblTitle)
+										.addComponent(lblStory))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(gl_panelEditStory.createParallelGroup(Alignment.LEADING)
+										.addComponent(comboStoryId, 0, 552, Short.MAX_VALUE)
+										.addComponent(txtTitle, GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
+								.addComponent(txtDescription, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+							.addGap(8))
+						.addGroup(gl_panelEditStory.createSequentialGroup()
+							.addComponent(lblDescription)
+							.addContainerGap(524, Short.MAX_VALUE))))
 		);
 		gl_panelEditStory.setVerticalGroup(
 			gl_panelEditStory.createParallelGroup(Alignment.LEADING)
@@ -107,11 +126,15 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 					.addContainerGap()
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTitle)
-						.addComponent(txtStoryTitle, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(txtTitle, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
+						.addComponent(comboStoryId, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblStory))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(lblDescription)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtStoryDescription, GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+					.addGap(18)
+					.addComponent(txtDescription, GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panelEditStory.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSave)
@@ -124,7 +147,7 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 		panelStories.setMinimumSize(new Dimension(400, 10));
 		panelStories.setMaximumSize(new Dimension(400, 32767));
 		panelStories.setBounds(new Rectangle(0, 0, 400, 0));
-		panelStories.setBorder(new TitledBorder(null, "All stories", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelStories.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "All tasks", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		splitPane.setLeftComponent(panelStories);
 		
 		textField = new JTextField();
@@ -161,7 +184,7 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 					.addContainerGap()
 					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
 					.addGap(18)
 					.addGroup(gl_panelStories.createParallelGroup(Alignment.BASELINE)
 						.addComponent(buttonAdd)
@@ -169,64 +192,74 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 					.addContainerGap())
 		);
 		
+		comboStoryId.setModel(taskManager.getStoryListModel());
+		comboStoryId.addActionListener(this);
 		
-		list.setModel(taskManager.getStoryListModel());
+		list.setModel(taskManager.getTaskListModel());
 		list.addListSelectionListener(this);
 		scrollPane.setViewportView(list);
 		panelStories.setLayout(gl_panelStories);
 	}
 	
 	
-	private void setCurrentStory(Story s) {
-		currentStory = s;
-		txtStoryTitle.setText(s.getTitle());
-		txtStoryDescription.setText(s.getDescription());
+	private void setCurrentTask(Task t) {
+		currentTask = t;
+		txtTitle.setText(t.getTitle());
+		txtDescription.setText(t.getDescription());
 		buttonRemove.setEnabled(true);
+		comboStoryId.setSelectedItem(taskManager.getStoryById(currentTask.getStory_id()));
 	}
 	
 	
 	private void addNew() {
-		taskManager.createStory("New Story", "Meaningful description");
+		taskManager.createTask("New Task", "Meaningful task description");
 	}
 	
 	private void removeCurrent() {
-		taskManager.removeStory(currentStory);
-		currentStory = null;
+		taskManager.removeTask(currentTask);
+		currentTask = null;
 		buttonRemove.setEnabled(false);
 		
 	}
 	
 	private void resetCurrent() {
-		txtStoryTitle.setText(currentStory.getTitle());
-		txtStoryDescription.setText(currentStory.getDescription());
+		txtTitle.setText(currentTask.getTitle());
+		txtDescription.setText(currentTask.getDescription());
+		comboStoryId.setSelectedItem(taskManager.getStoryById(currentTask.getStory_id()));
 	}
 
 	
 	private void saveCurrent() {
-		currentStory.setTitle(txtStoryTitle.getText());
-		currentStory.setDescription(txtStoryDescription.getText());
-		currentStory.notifyChanged();
-		taskManager.saveStory(currentStory);
-//		list.requestFocus();
+		currentTask.setTitle(txtTitle.getText());
+		currentTask.setDescription(txtDescription.getText());
+		currentTask.setStory_id(newStoryId);
+		currentTask.notifyChanged();
+		taskManager.saveTask(currentTask);
 	}
 	
 	private void cleanEditor() {
-		txtStoryTitle.setText("");
-		txtStoryDescription.setText("");
+		txtTitle.setText("");
+		txtDescription.setText("");
+		comboStoryId.setSelectedItem(null);
 	}
 
 	private void setEditorEnabled(boolean yes) {
-		txtStoryDescription.setEnabled(yes);
-		txtStoryTitle.setEnabled(yes);
+		txtDescription.setEnabled(yes);
+		txtTitle.setEnabled(yes);
 		btnSave.setEnabled(yes);
 		btnReset.setEnabled(yes);
+		comboStoryId.setEnabled(yes);
+	}
+	
+	private void setParentId(int id) {
+		newStoryId = id;
 	}
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(list.getSelectedIndex() >= 0) {
 			setEditorEnabled(true);
-			setCurrentStory(taskManager.getStoryListModel().getElementAt(list.getSelectedIndex()));
+			setCurrentTask(taskManager.getTaskListModel().getElementAt(list.getSelectedIndex()));
 		}
 		else {
 			setEditorEnabled(false);
@@ -249,6 +282,9 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 		else if(e.getSource() == buttonRemove) {
 			removeCurrent();
 		}
+		else if(e.getSource() == comboStoryId) {
+			if(comboStoryId.getSelectedItem() != null)
+				setParentId(((Story) comboStoryId.getSelectedItem()).getId());
+		}
 	}
-
 }

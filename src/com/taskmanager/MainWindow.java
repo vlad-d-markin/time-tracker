@@ -25,6 +25,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.sun.glass.events.WindowEvent;
 import com.taskmanager.gui.StoriesPanel;
 import com.taskmanager.gui.StoryEditorDialog;
+import com.taskmanager.gui.TasksPanel;
 import com.taskmanager.tasktree.TasksManager;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JLabel;
@@ -52,7 +53,6 @@ import javax.swing.JMenuItem;
 public class MainWindow implements ActionListener {
 
 	private JFrame frmTaskManager;
-	private StoryEditorDialog storyEditorDialog;
 	private TasksManager taskManager;
 	private JMenuItem mItemOpen;
 	private JFileChooser fileChooser;
@@ -115,7 +115,7 @@ public class MainWindow implements ActionListener {
 		StoriesPanel panelStories = new StoriesPanel(taskManager);
 		tabbedPane.addTab("Stories", panelStories);
 		
-		JPanel panelTasks = new JPanel();
+		TasksPanel panelTasks = new TasksPanel(taskManager);
 		tabbedPane.addTab("Tasks", null, panelTasks, null);
 		
 		JPanel panelSubtasks = new JPanel();
