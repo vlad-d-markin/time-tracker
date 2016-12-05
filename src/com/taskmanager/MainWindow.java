@@ -25,6 +25,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.sun.glass.events.WindowEvent;
 import com.taskmanager.gui.StoriesPanel;
 import com.taskmanager.gui.StoryEditorDialog;
+import com.taskmanager.gui.SubtasksPanel;
 import com.taskmanager.gui.TasksPanel;
 import com.taskmanager.tasktree.TasksManager;
 import com.jgoodies.forms.layout.FormSpecs;
@@ -119,7 +120,7 @@ public class MainWindow implements ActionListener {
 		TasksPanel panelTasks = new TasksPanel(taskManager);
 		tabbedPane.addTab("Tasks", null, panelTasks, null);
 		
-		JPanel panelSubtasks = new JPanel();
+		SubtasksPanel panelSubtasks = new SubtasksPanel(taskManager);
 		tabbedPane.addTab("Subtasks", null, panelSubtasks, null);
 	}
 

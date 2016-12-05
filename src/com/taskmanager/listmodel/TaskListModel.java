@@ -3,13 +3,15 @@ package com.taskmanager.listmodel;
 import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
 
 import com.taskmanager.tasktree.Story;
 import com.taskmanager.tasktree.Task;
 import com.taskmanager.tasktree.TaskListener;
 
-public class TaskListModel extends AbstractListModel<Task> implements TaskListener {
-private ArrayList<Task> tasks;
+public class TaskListModel extends AbstractListModel<Task> implements TaskListener, ComboBoxModel<Task>  {
+	private ArrayList<Task> tasks;
+	private Task selected;
 	
 	public TaskListModel(ArrayList<Task> tasks) {
 		this.tasks = tasks;
@@ -58,5 +60,16 @@ private ArrayList<Task> tasks;
 	@Override
 	public void notifyChanged(Task task) {
 		taskChanged(task);		
+	}
+
+	@Override
+	public Object getSelectedItem() {
+		return selected;
+	}
+
+	@Override
+	public void setSelectedItem(Object anItem) {
+		selected = (Task) anItem;
+		taskChanged(selected);
 	}
 }

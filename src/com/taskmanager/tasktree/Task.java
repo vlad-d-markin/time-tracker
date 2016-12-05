@@ -20,7 +20,7 @@ public class Task {
 	}
 	
 	public String toString() {
-		return title;
+		return String.format("[T%04d] [S%04d] %s", id, story_id, title);
 	}
 	
 	public String getTitle() {

@@ -42,7 +42,7 @@ public class Story {
 	}
 	
 	public String toString() {
-		return this.title;
+		return String.format("[S%04d] %s", this.id, this.title);
 	}
 	
 	public void adddListener(StoryListener listener) {

@@ -183,6 +183,9 @@ public class StoriesPanel extends JPanel implements ListSelectionListener, Actio
 		list.addListSelectionListener(this);
 		scrollPane.setViewportView(list);
 		panelStories.setLayout(gl_panelStories);
+		
+		setEditorEnabled(false);
+		buttonRemove.setEnabled(false);
 	}
 	
 	

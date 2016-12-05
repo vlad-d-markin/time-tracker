@@ -57,10 +57,7 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 	private JScrollPane descriptionScrollPane;
 	private JTextArea txtDescription;
 	
-	/**
-	 * Create the panel.
-	 */
-	
+
 	
 	public TasksPanel(TasksManager taskManager) {
 		this.taskManager = taskManager;
@@ -200,6 +197,9 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 		list.addListSelectionListener(this);
 		scrollPane.setViewportView(list);
 		panelStories.setLayout(gl_panelStories);
+		
+		setEditorEnabled(false);
+		buttonRemove.setEnabled(false);
 	}
 	
 	
