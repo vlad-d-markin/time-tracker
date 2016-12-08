@@ -238,4 +238,8 @@ public class TasksManager {
 			return false;
 		}
 	}
+	
+	public ArrayList<Subtask> getSubtasks() {
+		return subtasks;
+	}
 }

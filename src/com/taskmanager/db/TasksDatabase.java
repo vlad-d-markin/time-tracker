@@ -26,8 +26,8 @@ public class TasksDatabase {
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'stories' 		 ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' TEXT, 'description' TEXT)");
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'tasks'     	 ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' TEXT, 'description' TEXT)");
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'subtasks' 		 ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' TEXT, 'description' TEXT, 'owner' TEXT, 'from' DATE, 'due' DATE)");
-		createStatement.execute("CREATE TABLE IF NOT EXISTS 'stories_tasks'  ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'story_id' INTEGER, 'task_id'    INTEGER)");
-		createStatement.execute("CREATE TABLE IF NOT EXISTS 'tasks_subtasks' ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'task_id'  INTEGER, 'subtask_id' INTEGER)");
+		createStatement.execute("CREATE TABLE IF NOT EXISTS 'stories_tasks'  ('story_id' INTEGER, 'task_id'    INTEGER)");
+		createStatement.execute("CREATE TABLE IF NOT EXISTS 'tasks_subtasks' ('task_id'  INTEGER, 'subtask_id' INTEGER)");
 		
 		createStatement.close();
 	}
@@ -172,5 +172,12 @@ public class TasksDatabase {
 		statement.execute("UPDATE tasks_subtasks SET task_id='" + (new Integer(st.getTaskId())).toString() + "' WHERE subtask_id='" + (new Integer(st.getId())).toString() + "'");
 		
 		statement.close();
+	}
+	
+	public ArrayList<Subtask> filterSubtasks(String story, String task) throws SQLException {
+		Statement getStatement = dbConnection.createStatement();
+		ArrayList<Subtask> subtasks = new ArrayList<Subtask>();
+
+		return subtasks;
 	}
 }

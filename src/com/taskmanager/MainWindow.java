@@ -23,6 +23,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import com.sun.glass.events.WindowEvent;
+import com.taskmanager.gui.OverviewPanel;
 import com.taskmanager.gui.StoriesPanel;
 import com.taskmanager.gui.StoryEditorDialog;
 import com.taskmanager.gui.SubtasksPanel;
@@ -48,15 +49,25 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+
 import javax.swing.JTabbedPane;
 import javax.swing.JMenuItem;
 
 public class MainWindow implements ActionListener {
 
 	private JFrame frmTaskManager;
-	private TasksManager taskManager;
-	private JMenuItem mItemOpen;
+	private TasksManager taskManager;	
 	private JFileChooser fileChooser;
+	private JTabbedPane tabbedPane;
+	
+	private JMenuItem mItemOpen;
+	private JMenuItem mntmCreate;
+	private JMenuItem mntmCloseDb;
+	private JMenuItem mntmQuit;
+	private JPanel panelOverview;
+	
 	
 	/**
 	 * Launch the application.
@@ -80,8 +91,6 @@ public class MainWindow implements ActionListener {
 	public MainWindow() {
 		taskManager = new TasksManager();
 		
-//		taskManager.op
-		
 		initialize();
 	}
 
@@ -91,7 +100,7 @@ public class MainWindow implements ActionListener {
 	private void initialize() {
 		fileChooser = new JFileChooser();
 		frmTaskManager = new JFrame();
-		frmTaskManager.setMinimumSize(new Dimension(860, 540));
+		frmTaskManager.setMinimumSize(new Dimension(1060, 540));
 		
 		frmTaskManager.setTitle("Task Manager");
 		frmTaskManager.setBounds(100, 100, 1012, 550);
@@ -106,10 +115,23 @@ public class MainWindow implements ActionListener {
 		mItemOpen = new JMenuItem("Open");
 		mItemOpen.addActionListener(this);
 		
+		mntmCreate = new JMenuItem("Create");
+		menuTabFile.add(mntmCreate);
+		mntmCreate.addActionListener(this);
+		
 		menuTabFile.add(mItemOpen);
+		
+		mntmCloseDb = new JMenuItem("Close DB");
+		menuTabFile.add(mntmCloseDb);
+		mntmCloseDb.addActionListener(this);
+		
+		mntmQuit = new JMenuItem("Quit");
+		menuTabFile.add(mntmQuit);
+		mntmQuit.addActionListener(this);
+		
 		frmTaskManager.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frmTaskManager.getContentPane().add(tabbedPane);
 		
 		// Panels
@@ -122,23 +144,60 @@ public class MainWindow implements ActionListener {
 		
 		SubtasksPanel panelSubtasks = new SubtasksPanel(taskManager);
 		tabbedPane.addTab("Subtasks", null, panelSubtasks, null);
+		
+		panelOverview = new OverviewPanel(taskManager);
+		tabbedPane.addTab("Overview", null, panelOverview, null);
+		
+		enableMainPanel(false);
+	}
+	
+	
+	public void enableMainPanel(boolean yes) {
+		enableContainer(tabbedPane, yes);
+	}
+	
+	private void enableContainer(Container container, boolean enable) {
+		Component[] components = container.getComponents();
+		container.setEnabled(enable);
+        for (Component component : components) {
+            component.setEnabled(enable);
+            if (component instanceof Container) {
+            	enableContainer((Container)component, enable);
+            }
+        }
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		System.out.println(e.getActionCommand());
-		if(e.getSource() == mItemOpen) {
+		
+		if(e.getSource() == mntmCreate) {
+			int fileChooserRetVal = fileChooser.showSaveDialog(frmTaskManager);
+			
+			if(fileChooserRetVal == JFileChooser.APPROVE_OPTION) {
+				File dbFile = fileChooser.getSelectedFile();
+				taskManager.closeDB();
+				taskManager.openDB(dbFile.getAbsolutePath());
+				enableMainPanel(true);
+			}
+		}		
+		else if(e.getSource() == mItemOpen) {
 			int fileChooserRetVal = fileChooser.showOpenDialog(frmTaskManager);
 			
 			if(fileChooserRetVal == JFileChooser.APPROVE_OPTION) {
 				File dbFile = fileChooser.getSelectedFile();
 				taskManager.closeDB();
 				taskManager.openDB(dbFile.getAbsolutePath());
+				enableMainPanel(true);
 			}
-			else {
-				
-			}
+		}
+		else if(e.getSource() == mntmCloseDb) {
+			taskManager.closeDB();
+			enableMainPanel(false);
+		}
+		else if(e.getSource() == mntmQuit) {
+			taskManager.closeDB();
+			System.exit(0);
 		}
 	}
 }

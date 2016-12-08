@@ -39,8 +39,6 @@ import javax.swing.JComboBox;
 
 public class TasksPanel extends JPanel implements ListSelectionListener, ActionListener {
 	private TasksManager taskManager;
-	
-	private JTextField textField;	
 	private JList list;	
 	private JButton buttonRemove;
 	private JButton buttonAdd;
@@ -148,10 +146,6 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 		panelStories.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "All tasks", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		splitPane.setLeftComponent(panelStories);
 		
-		textField = new JTextField();
-		textField.setText("Search");
-		textField.setColumns(10);
-		
 		list = new JList();
 		
 		buttonAdd = new JButton("Add");
@@ -169,8 +163,7 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 					.addContainerGap()
 					.addGroup(gl_panelStories.createParallelGroup(Alignment.TRAILING)
 						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-						.addComponent(textField, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE)
-						.addGroup(Alignment.LEADING, gl_panelStories.createSequentialGroup()
+						.addGroup(gl_panelStories.createSequentialGroup()
 							.addComponent(buttonAdd, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
 							.addGap(57)
 							.addComponent(buttonRemove, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)))
@@ -178,11 +171,9 @@ public class TasksPanel extends JPanel implements ListSelectionListener, ActionL
 		);
 		gl_panelStories.setVerticalGroup(
 			gl_panelStories.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panelStories.createSequentialGroup()
+				.addGroup(Alignment.TRAILING, gl_panelStories.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
 					.addGap(18)
 					.addGroup(gl_panelStories.createParallelGroup(Alignment.BASELINE)
 						.addComponent(buttonAdd)
