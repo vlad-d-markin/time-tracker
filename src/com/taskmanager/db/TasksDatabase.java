@@ -2,6 +2,7 @@ package com.taskmanager.db;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.taskmanager.tasktree.OverviewItem;
 import com.taskmanager.tasktree.Story;
@@ -179,15 +180,28 @@ public class TasksDatabase {
 		statement.close();
 	}
 	
-	public ArrayList<OverviewItem> filterSubtasks(Integer storyId, Integer taskId, String owner) throws SQLException {
+	public ArrayList<OverviewItem> filterSubtasks(Integer storyId, Integer taskId, String owner, java.util.Date from, java.util.Date due) throws SQLException {
 		Statement getStatement = dbConnection.createStatement();
 		ArrayList<OverviewItem> subtasks = new ArrayList<>();
+		
+		String fromStr = "1970-01-01";
+		String dueStr = "2090-01-01"; 
+		
+		if(from != null) {
+			fromStr = Subtask.DATE_FORMAT.format(from);
+		}
+		if(due != null) {
+			dueStr = Subtask.DATE_FORMAT.format(due);
+		}
+		
 		
 		String storyCond = storyId == null ? "1" : "story_id = " + storyId.toString();
 		String taskCond  = taskId == null  ? "1" : "task_id = " + taskId.toString();
 		String ownerCond = owner == null   ? "1" : "owner = '" + owner + "'";
+		String fromCond  = from == null    ? "1" : "`from` >= '" + fromStr + "'";
+		String dueCond   = due == null     ? "1" : "due <= '" + dueStr + "'";
 		
-		String cond = " WHERE " + storyCond + " AND " + taskCond + " AND " + ownerCond;
+		String cond = " WHERE " + storyCond + " AND " + taskCond + " AND " + ownerCond + " AND " + fromCond  + " AND " + dueCond;
 		
 		
 		ResultSet res = getStatement.executeQuery("SELECT * FROM overview " + cond);

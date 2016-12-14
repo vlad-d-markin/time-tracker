@@ -15,7 +15,7 @@ public class Subtask {
 	private Date due;
 	private SubtaskListener listener;
 	
-	private DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 	
 	
 	public Subtask(int id, int task_id, String title, String owner, String description, String from, String due) {

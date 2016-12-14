@@ -2,6 +2,7 @@ package com.taskmanager.tasktree;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.AbstractListModel;
 
@@ -266,9 +267,9 @@ public class TasksManager {
 		return subtasks;
 	}
 	
-	public ArrayList<OverviewItem> getFilteredSubtasks(Integer storyId, Integer taskId, String owner) {
+	public ArrayList<OverviewItem> getFilteredSubtasks(Integer storyId, Integer taskId, String owner, Date from, Date due) {
 		try {
-			return db.filterSubtasks(storyId, taskId, owner);
+			return db.filterSubtasks(storyId, taskId, owner, from, due);
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

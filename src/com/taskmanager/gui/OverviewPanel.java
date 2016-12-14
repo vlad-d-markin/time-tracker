@@ -4,7 +4,9 @@ import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -38,6 +40,10 @@ public class OverviewPanel extends JPanel {
 	private JComboBox comboStory;
 	private JComboBox comboTask;
 	private JComboBox comboOwner;
+	
+	private JFormattedTextField formattedFrom;
+	private JFormattedTextField formattedDue;
+	
 	
 	private OverviewTableModel model;
 
@@ -88,9 +94,18 @@ public class OverviewPanel extends JPanel {
 		
 		JLabel lblDue = new JLabel("Due:");
 		
-		JFormattedTextField formattedTextField = new JFormattedTextField();
 		
-		JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+		Date from = new Date();
+		Date due = new Date();
+		
+		try {
+			from = Subtask.DATE_FORMAT.parse("1970-01-01");
+			due = Subtask.DATE_FORMAT.parse("2090-01-01");
+		}
+		catch (ParseException e) { }
+		
+		formattedFrom = new JFormattedTextField(from);		
+		formattedDue = new JFormattedTextField(due);
 		
 		JButton btnApply = new JButton("Apply");
 		btnApply.addActionListener(new ActionListener() {
@@ -128,8 +143,8 @@ public class OverviewPanel extends JPanel {
 										.addComponent(lblDue))
 									.addGap(26)
 									.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-										.addComponent(formattedTextField, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-										.addComponent(formattedTextField_1, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))))))
+										.addComponent(formattedFrom, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+										.addComponent(formattedDue, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE))))))
 					.addGap(7))
 		);
 		gl_panel.setVerticalGroup(
@@ -145,11 +160,11 @@ public class OverviewPanel extends JPanel {
 						.addComponent(lblTask)
 						.addComponent(comboTask, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblFrom)
-						.addComponent(formattedTextField, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+						.addComponent(formattedFrom, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblDue)
-						.addComponent(formattedTextField_1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
+						.addComponent(formattedDue, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(btnApply)
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -164,6 +179,7 @@ public class OverviewPanel extends JPanel {
 		
 		
 		table.setModel(model);
+		
 	}
 	
 	
@@ -178,7 +194,9 @@ public class OverviewPanel extends JPanel {
 		model.setList(tasksManager.getFilteredSubtasks(
 				s == null ? null : s.getId(), 
 				t == null ? null : t.getId(),
-				owner
+				owner,
+				(Date) formattedFrom.getValue(),
+				(Date) formattedDue.getValue()
 				));
 		
 	}
