@@ -20,6 +20,7 @@ import com.jgoodies.forms.layout.RowSpec;
 import com.taskmanager.listmodel.OverviewTableModel;
 import com.taskmanager.tasktree.Story;
 import com.taskmanager.tasktree.Subtask;
+import com.taskmanager.tasktree.Task;
 import com.taskmanager.tasktree.TasksManager;
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JComboBox;
@@ -35,12 +36,14 @@ public class OverviewPanel extends JPanel {
 	private JTable table;
 	
 	private JComboBox comboStory;
+	private JComboBox comboTask;
+	private JComboBox comboOwner;
 	
 	private OverviewTableModel model;
 
 	public OverviewPanel(TasksManager tasksManager) {
 		this.tasksManager = tasksManager;
-		model = new OverviewTableModel(tasksManager.getSubtasks());
+		model = new OverviewTableModel();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Filter", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -75,17 +78,11 @@ public class OverviewPanel extends JPanel {
 		
 		JLabel lblTask = new JLabel("Task:");
 		
-		JComboBox comboTask = new JComboBox();
-		comboTask.setEditable(true);
-		
-		JLabel lblSubtask = new JLabel("Subtask:");
-		
-		JComboBox comboSubtask = new JComboBox();
-		comboSubtask.setEditable(true);
+		comboTask = new JComboBox();
 		
 		JLabel lblOwner = new JLabel("Owner:");
 		
-		JComboBox comboBox_3 = new JComboBox();
+		comboOwner = new JComboBox();
 		
 		JLabel lblFrom = new JLabel("From:");
 		
@@ -114,19 +111,17 @@ public class OverviewPanel extends JPanel {
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblStory)
-								.addComponent(lblTask)
-								.addComponent(lblSubtask))
-							.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(lblTask))
+							.addGap(31)
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 								.addComponent(comboStory, 0, 388, Short.MAX_VALUE)
-								.addComponent(comboTask, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addComponent(comboSubtask, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addComponent(comboTask, 0, 388, Short.MAX_VALUE))
 							.addGap(36)
 							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 								.addGroup(gl_panel.createSequentialGroup()
 									.addComponent(lblOwner)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(comboBox_3, 0, 442, Short.MAX_VALUE))
+									.addComponent(comboOwner, 0, 442, Short.MAX_VALUE))
 								.addGroup(gl_panel.createSequentialGroup()
 									.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 										.addComponent(lblFrom)
@@ -144,7 +139,7 @@ public class OverviewPanel extends JPanel {
 						.addComponent(lblStory)
 						.addComponent(comboStory, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblOwner)
-						.addComponent(comboBox_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboOwner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTask)
@@ -153,8 +148,6 @@ public class OverviewPanel extends JPanel {
 						.addComponent(formattedTextField, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblSubtask)
-						.addComponent(comboSubtask, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblDue)
 						.addComponent(formattedTextField_1, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -166,6 +159,9 @@ public class OverviewPanel extends JPanel {
 		setLayout(groupLayout);
 		
 		comboStory.setModel(tasksManager.getStoryListModel());
+		comboTask.setModel(tasksManager.getTaskListModel());
+		comboOwner.setModel(tasksManager.getOwnerListModel());
+		
 		
 		table.setModel(model);
 	}
@@ -174,6 +170,16 @@ public class OverviewPanel extends JPanel {
 	private void loadTable() {
 //		ArrayList<Subtask> subtasks = tasksManager.getSubtasks();
 		
+		Story s = (Story) comboStory.getSelectedItem();
+		Task t = (Task) comboTask.getSelectedItem();
+		String owner = (String) comboOwner.getSelectedItem();
+		
+		
+		model.setList(tasksManager.getFilteredSubtasks(
+				s == null ? null : s.getId(), 
+				t == null ? null : t.getId(),
+				owner
+				));
 		
 	}
 }

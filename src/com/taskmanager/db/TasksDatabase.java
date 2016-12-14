@@ -3,6 +3,7 @@ package com.taskmanager.db;
 import java.sql.*;
 import java.util.ArrayList;
 
+import com.taskmanager.tasktree.OverviewItem;
 import com.taskmanager.tasktree.Story;
 import com.taskmanager.tasktree.Subtask;
 import com.taskmanager.tasktree.Task;
@@ -28,6 +29,10 @@ public class TasksDatabase {
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'subtasks' 		 ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'title' TEXT, 'description' TEXT, 'owner' TEXT, 'from' DATE, 'due' DATE)");
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'stories_tasks'  ('story_id' INTEGER, 'task_id'    INTEGER)");
 		createStatement.execute("CREATE TABLE IF NOT EXISTS 'tasks_subtasks' ('task_id'  INTEGER, 'subtask_id' INTEGER)");
+		createStatement.execute("CREATE VIEW IF NOT EXISTS overview AS SELECT subtasks.id, subtasks.title, subtasks.owner, subtasks.due, subtasks.`from`, stories.title AS story_title, tasks.title AS task_title, tasks.id AS task_id, stories.id AS story_id " + 
+      "FROM subtasks, tasks_subtasks, tasks, stories_tasks, stories " + 
+      "WHERE subtasks.id = tasks_subtasks.subtask_id AND tasks_subtasks.task_id = stories_tasks.task_id AND tasks.id = stories_tasks.task_id AND stories_tasks.story_id = stories.id;");
+		
 		
 		createStatement.close();
 	}
@@ -174,10 +179,36 @@ public class TasksDatabase {
 		statement.close();
 	}
 	
-	public ArrayList<Subtask> filterSubtasks(String story, String task) throws SQLException {
+	public ArrayList<OverviewItem> filterSubtasks(Integer storyId, Integer taskId, String owner) throws SQLException {
 		Statement getStatement = dbConnection.createStatement();
-		ArrayList<Subtask> subtasks = new ArrayList<Subtask>();
-
+		ArrayList<OverviewItem> subtasks = new ArrayList<>();
+		
+		String storyCond = storyId == null ? "1" : "story_id = " + storyId.toString();
+		String taskCond  = taskId == null  ? "1" : "task_id = " + taskId.toString();
+		String ownerCond = owner == null   ? "1" : "owner = '" + owner + "'";
+		
+		String cond = " WHERE " + storyCond + " AND " + taskCond + " AND " + ownerCond;
+		
+		
+		ResultSet res = getStatement.executeQuery("SELECT * FROM overview " + cond);
+		while(res.next()) {
+			OverviewItem oi = new OverviewItem(res.getString(2), res.getString(3), res.getString(4), res.getString(5), res.getString(7), res.getString(6));
+			subtasks.add(oi);
+		}
+		
 		return subtasks;
+	}
+	
+	
+	public ArrayList<String> getOwners() throws SQLException {
+		Statement getStatement = dbConnection.createStatement();
+		ArrayList<String> owners = new ArrayList<>();		
+		
+		ResultSet res = getStatement.executeQuery("SELECT DISTINCT owner FROM subtasks");
+		while(res.next()) {
+			owners.add(res.getString(1));
+		}
+		
+		return owners;
 	}
 }

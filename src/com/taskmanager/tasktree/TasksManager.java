@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 
 import com.taskmanager.db.TasksDatabase;
+import com.taskmanager.listmodel.OwnerListModel;
 import com.taskmanager.listmodel.StoryListModel;
 import com.taskmanager.listmodel.SubtaskListModel;
 import com.taskmanager.listmodel.TaskListModel;
@@ -17,10 +18,12 @@ public class TasksManager {
 	private ArrayList<Story> stories;
 	private ArrayList<Task> tasks;
 	private ArrayList<Subtask> subtasks;
+	private ArrayList<String> owners;
 	
 	private StoryListModel storyListModel;
 	private TaskListModel taskListModel;
 	private SubtaskListModel subtaskListModel;
+	private OwnerListModel ownerListModel;
 	
 	
 	public TasksManager() {
@@ -28,9 +31,11 @@ public class TasksManager {
 		tasks = new ArrayList<Task>();
 		subtasks = new ArrayList<Subtask>();
 		db = new TasksDatabase();
+		owners = new ArrayList<>();
 		storyListModel = new StoryListModel(stories);
 		taskListModel = new TaskListModel(tasks);
 		subtaskListModel = new SubtaskListModel(subtasks);
+		ownerListModel = new OwnerListModel(owners);
 	}
 	
 	public void openDB(String path) {
@@ -40,6 +45,7 @@ public class TasksManager {
 			loadStories();
 			loadTasks();
 			loadSubtasks();
+			refreshOwners();
 		}
 		catch(SQLException e) {
 			System.err.println("DB error while connecting.");
@@ -80,6 +86,10 @@ public class TasksManager {
 		return this.subtaskListModel;
 	}
 	
+	public OwnerListModel getOwnerListModel() {		
+		return this.ownerListModel;
+	}
+	
 	public void loadStories() {
 		try {
 			ArrayList<Story> list = db.getStories();
@@ -89,7 +99,6 @@ public class TasksManager {
 			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -102,13 +111,24 @@ public class TasksManager {
 		return null;
 	}
 	
+	public void refreshOwners() {
+		try {
+			ArrayList<String> owners = db.getOwners();
+			ownerListModel.cleanList();
+			for(String o : owners)
+				ownerListModel.addOwner(o);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void createStory(String title, String description) {		
 		try {
 			Story s = new Story(title, description);
 			db.createStory(s);
 			loadStories();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -208,6 +228,7 @@ public class TasksManager {
 		try {
 			db.createSubtask(new Subtask(title, owner, description));
 			loadSubtasks();
+			refreshOwners();
 			return true;
 		}
 		catch (SQLException e) {
@@ -220,6 +241,7 @@ public class TasksManager {
 		try {
 			db.removeSubtask(st.getId());
 			subtaskListModel.remove(st);
+			refreshOwners();
 			return true;
 		}
 		catch(SQLException e) {
@@ -231,6 +253,7 @@ public class TasksManager {
 	public boolean saveSubtask(Subtask st) {
 		try {
 			db.editSubtask(st);
+			refreshOwners();
 			return true;
 		}
 		catch (SQLException e) {
@@ -241,5 +264,15 @@ public class TasksManager {
 	
 	public ArrayList<Subtask> getSubtasks() {
 		return subtasks;
+	}
+	
+	public ArrayList<OverviewItem> getFilteredSubtasks(Integer storyId, Integer taskId, String owner) {
+		try {
+			return db.filterSubtasks(storyId, taskId, owner);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
