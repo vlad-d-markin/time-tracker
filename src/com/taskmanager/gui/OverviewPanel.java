@@ -44,6 +44,8 @@ public class OverviewPanel extends JPanel {
 	private JFormattedTextField formattedFrom;
 	private JFormattedTextField formattedDue;
 	
+	private Date defaultFrom;
+	private Date defaultDue;
 	
 	private OverviewTableModel model;
 
@@ -95,24 +97,36 @@ public class OverviewPanel extends JPanel {
 		JLabel lblDue = new JLabel("Due:");
 		
 		
-		Date from = new Date();
-		Date due = new Date();
+		defaultFrom = new Date();
+		defaultDue = new Date();
 		
 		try {
-			from = Subtask.DATE_FORMAT.parse("1970-01-01");
-			due = Subtask.DATE_FORMAT.parse("2090-01-01");
+			defaultFrom = Subtask.DATE_FORMAT.parse("1970-01-01");
+			defaultDue = Subtask.DATE_FORMAT.parse("2090-01-01");
 		}
 		catch (ParseException e) { }
 		
-		formattedFrom = new JFormattedTextField(from);		
-		formattedDue = new JFormattedTextField(due);
+		formattedFrom = new JFormattedTextField(defaultFrom);		
+		formattedDue = new JFormattedTextField(defaultDue);
 		
 		JButton btnApply = new JButton("Apply");
-		btnApply.addActionListener(new ActionListener() {
-			
+		btnApply.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				loadTable();				
+			}
+		});
+		
+		JButton btnReset = new JButton("Reset");
+		btnReset.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					formattedDue.setValue(defaultDue);
+					formattedFrom.setValue(defaultFrom);
+					comboOwner.setSelectedItem(null);
+					comboStory.setSelectedItem(null);
+					comboTask.setSelectedItem(null);
+					loadTable();
 			}
 		});
 		
@@ -122,7 +136,10 @@ public class OverviewPanel extends JPanel {
 				.addGroup(gl_panel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(btnApply)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addComponent(btnReset)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(btnApply))
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblStory)
@@ -166,7 +183,9 @@ public class OverviewPanel extends JPanel {
 						.addComponent(lblDue)
 						.addComponent(formattedDue, GroupLayout.PREFERRED_SIZE, 28, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(btnApply)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnApply)
+						.addComponent(btnReset))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		panel.setLayout(gl_panel);
